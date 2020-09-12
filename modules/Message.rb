@@ -10,12 +10,12 @@ module Message
     require 'logger'
 
     # i18n モジュールの設定
-    I18n.load_path = [".\\messages.yml"]    # 文言ファイルは固定
-    I18n.locale = :ja                       # 日本語指定
+    I18n.load_path = [".\\locale\\messages.yml"]    # 文言ファイルは固定
+    I18n.locale = :ja                               # 日本語指定
 
     # logger の設定
-    date_format = '%Y-%m-%d %H:%M:%S'           # 日時フォーマット　固定
-    @applog = Logger.new('.\\FileBackup.log')   # 出力ログファイル　固定
+    date_format = '%Y-%m-%d %H:%M:%S'               # 日時フォーマット　固定
+    @applog = Logger.new('.\\log\\FileBackup.log')  # 出力ログファイル　固定
     @applog.datetime_format = date_format
 
     # self.show

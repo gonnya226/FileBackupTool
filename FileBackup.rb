@@ -5,7 +5,8 @@ require '.\modules\Message.rb'
 
 
 # 設定ファイルの読み込み
-setting = Inifile.read(".\\settinfg.ini")
+setting = Inifile.read(".\\setting.ini")
+system = Inifile.read(".\\system.ini")
 
 # エラー終了：設定が取れなかった場合
 if !setting then
