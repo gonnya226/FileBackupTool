@@ -1,8 +1,7 @@
 require '.\modules\Inifile.rb'
 require '.\modules\Utility.rb'
 require '.\modules\Message.rb'
-
-
+require '.\modules\ProgressBar.rb'
 
 # 設定ファイルの読み込み
 setting = Inifile.read(".\\setting.ini")
@@ -10,33 +9,33 @@ system = Inifile.read(".\\system.ini")
 
 # エラー終了：設定が取れなかった場合
 if !setting then
-    # logger.fatal("設定ファイルの読み込みでエラーが発生しました。")
+    Message.show(:err02, "", :fatal)
     exit
 end
 
-p "終了"
-exit
-
-# 準備：コピー元ディレクトリの配列生成''
-srcdir = BackupUtil.getSrcDir(setting["src"])
-
-# 準備：コピー先ディレクトリの作成
+# 準備：コピー元、コピー先ディレクトリの作成
+src_dir = BackupUtil.get_src_dir(setting["src"])
 dest_dir = setting["destination"]["dest_dir"]
 dest_prefix = setting["destination"]["dest_prefix"]
 
-# 準備：ログ出力先
-log_dir = setting["log"]["log_dir"]
-log_prefix = setting["log"]["log_prefix"]
-
-# エラー終了：バックアップ先フォルダーがない場合
-if !File.directory?(dest_dir) then
-    # ShowResult.showError(ShowResult::ERR02)
-    # destdir = File.join(dest["dest_dir"], dest["dest_prefix"] + Time.new.strftime("%Y%m%d%H%M%S"))
+# コピー元ディレクトリがない場合、エラー終了
+if src_dir.length == 0 then
+    Message.show(:err03, "", :fatal)
+    exit
 end
 
-BackupUtil.showConfirmation
+# バックアップ先ディレクトリがない場合、エラー終了
+# （間違っている可能性があるので、自動で作ったりしない）
+if !File.directory?(dest_dir) then
+    Message.show(:err04, "", :fatal)
+    exit
+end
 
-puts "File Backup!"
+# 情報表示と実行確認
+BackupUtil.show_dir_info(src_dir, dest_dir)
+BackupUtil.show_confirmation
+
+BackupUtil.execute_copy(src_dir, dest_dir, dest_prefix)
 
 
 # コピー先ディレクトリは、コピー実行開始直後に作る。

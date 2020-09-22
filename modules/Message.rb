@@ -26,7 +26,7 @@ module Message
     #               デフォルトは :none, 指定がない場合は、ログへの出力は行わない。
     #   戻り値：無し
     def self.show(label, description, level = :none)
-        mes = createMessage(label, description) 
+        mes = t(label, desc: description) 
 
         # コンソールへ表示
         puts mes 
@@ -45,7 +45,7 @@ module Message
     #               デフォルトは :unknown, 指定に誤りがある場合も、:unknown で判断する。
     #   戻り値：無し
     def self.log(label, description, level = :unknown)
-        mes = createMessage(label, description) 
+        mes = t(label, desc: description) 
 
         # ログレベルに従って、ログへ出力する。
         case level
@@ -57,12 +57,11 @@ module Message
         end
     end
 
-    private
-
-    # self.createMessage
-    #   i18n の定型文を取得し、出力する文字列を返す。
-    def self.createMessage(label, description)
-        return I18n.t(label, desc: description)
+    # self.t
+    #   ロケールファイルの文字列を取得し、返す。
+    def self.t(label, *args)
+        # 引数を右から左へ受け流す。
+        return I18n.t(label, *args)
     end
 
 end
