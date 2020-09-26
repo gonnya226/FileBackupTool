@@ -65,11 +65,13 @@ module Inifile
         return hash
 
     rescue Exception => ex
-        # 例外発生時の処理
-        Message.show(:err01, " #{ex.class}: #{ex.message}", :error)
+        # 例外発生時の処理:エラー情報のみ出力する。
+        puts "#{__method__}: #{ex.class}: #{ex.message} "
+        puts "#{ex.backtrace.join("\n")}"
+
     ensure
         # inifile がオープンされてたら閉じる。
-        inifile.close if inifile
+        inifile.close unless inifile.closed?
     end
 
 end
