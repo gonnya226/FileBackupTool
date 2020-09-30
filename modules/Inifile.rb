@@ -62,10 +62,25 @@ module Inifile
         # ハッシュ配列を返す。
         return hash
 
-    rescue Exception => ex
-        # 例外発生時の処理:エラー情報のみ出力する。
+    rescue Errno::ENOENT
+        puts "【エラー】#{path} ファイルが見つかりません。"
+        puts "ファイルのパスを確認してください。"
+        puts "処理を中止します。"
+        exit(false)
+
+    rescue ArgumentError
+        puts "【エラー】#{path} ファイルの読み取りに失敗しました。"
+        puts "#{path} ファイルの文字コードがUTF-8になっているか、確認してください。"
+        puts "処理を中止します。"
+        exit(false)
+
+    rescue StandardError => ex
+        puts "【エラー】例外が発生しました。例外の内容を確認してください。"
         puts "#{__method__}: #{ex.class}: #{ex.message} "
         puts "#{ex.backtrace.join("\n")}"
+        puts "処理を中止します。"
+        exit(false)
+
     end
 
 end
