@@ -1,6 +1,6 @@
 module Inifile
     #
-    # Inifile.read
+    # read
     #   引数で指定されたIniファイルパスの内容をハッシュ配列にして返す。
     #   引数　：iniファイルパス（絶対パス、相対パスどちらも可）
     #   戻り値：２次元ハッシュ
@@ -10,7 +10,7 @@ module Inifile
     #           key が重複した場合は、後の値で上書きする。
     #           Iniファイル内で`;`のコメント使用可。`;`以降の文字列は無視する。
     #           
-    def self.read(inifile_path) 
+    def read(path) 
 
         # ローカル変数の初期化
         section = ""
@@ -19,9 +19,7 @@ module Inifile
         hash = Hash.new { |h,k| h[k] = {} }
 
         # ini ファイルを、読み取り専用でオープン
-        inifile = File.open(inifile_path, "r:utf-8")
-
-        inifile.each do |line| 
+        File.open(path, "r:utf-8").each do |line| 
 
             # `;`記号がある場合はコメントと判断し、最初の`;`記号以降を除外する。
             line.sub!(/;.*/m,"") if line.match(/;/)            
@@ -68,11 +66,8 @@ module Inifile
         # 例外発生時の処理:エラー情報のみ出力する。
         puts "#{__method__}: #{ex.class}: #{ex.message} "
         puts "#{ex.backtrace.join("\n")}"
-
-    ensure
-        # inifile がオープンされてたら閉じる。
-        inifile.close unless inifile.closed?
     end
 
 end
  
+
