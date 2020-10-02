@@ -9,11 +9,9 @@ SYSTEM_INI = "./system.ini".freeze
 sys = SystemSetting.new(SYSTEM_INI)
 
 # メッセージクラスの初期設定
-if !Message.init(sys) then
-    puts SYSTEMERROR02
-    exit(false)
-end
+Message.init(sys) 
 
+# ディレクトリ情報の取得
 dirs = DirectorySetting.new(sys.setting_path)
 
 # 情報表示と実行確認
