@@ -44,11 +44,18 @@ class ProgressBar
         end
         
         # 情報表示
-        print "\r" + " "*BAR*2
+        print "\r" + " "*BAR.length*2
         print "\r" + sprintf("%s %s %s%% (%s/%s) %s...", @title[0,10], @line, progress, get_size_str(@done), get_size_str(@total), info[0,5] )
     end
     
-    # 進捗状態をリセットする。
+    #
+    # reset
+    # 進捗をリセットする。
+    #   引数
+    #       なし
+    #   戻り値
+    #       なし
+    #
     def reset
         @done = 0
     end
@@ -56,31 +63,44 @@ class ProgressBar
     private
 
     #
-    # 進捗割合を取得する。
+    # get_progress
+    # 進捗度を割合計算し、100分率(%)で返す。
+    #   引数
+    #       total   :   100% となるサイズ
+    #       done    :   実行済みのサイズ
+    #   戻り値
+    #       進捗度（100分率の整数値）
+    #
     def get_progress(total, done)
-        if done <= 0 then return 0 end          # done が 0 以下の場合は、0 を返す。
-        if total <= 0 then return 100 end       # total が 0 以下 : 100% として返す。
+        if done <= 0    then return 0   end     # done が 0 以下の場合は、0 を返す。
+        if total <= 0   then return 100 end     # total が 0 以下 : 100% として返す。
         if total < done then return 101 end     # total が done よりも小さい : 101% として返す。
 
         return ((done*100)/total).round     # 計算して返す。値は四捨五入で返す。
     end
 
-    # ファイルサイズ文字列を返す。(size は、バイト数で来ることを想定)
-    def get_size_str(size)
+    #
+    # get_size_str      バイト数を KiB, MiB, GiB のうち、最適な単位に変換して返す。
+    #   引数
+    #       bytes   :   バイト数
+    #   戻り値
+    #       最適な単位にしたバイト数と単位を付与した文字列
+    #
+    def get_size_str(bytes)
 
-        unit = ["Bytes", "KiB", "MiB", "Gib"]
+        unit = ["Bytes", "KiB", "MiB", "GiB"]
         block = 1024
 
-        for n in 0..3 do
-            if size.between?(block**n, block**(n+1)) then
-                return ((size/block**n).floor).to_s + unit[n]
+        # KiB, MiB, GiB かどうかを判定する。
+        for n in 1..3 do
+            if bytes.between?(block**n, block**(n+1)) then
+                return ((bytes/block**n).floor).to_s + unit[n]
             end
         end
 
-        # どの単位にも合致しない場合（TiB以上か、負数）は、そのまま Bytes で返す。
-        return size + "Bytes"
+        # どの単位にも合致しない場合は、そのまま Bytes で返す。
+        return bytes + unit[0]
 
     end
 
 end
-

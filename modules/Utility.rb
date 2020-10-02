@@ -3,38 +3,11 @@ module BackupUtil
     require 'fileutils'
 
     #
-    # self.get_src_dir
-    #   コピー元ディレクトリのハッシュを受け取り、有効なパスのみのハッシュにして戻す。
-    #   引数
-    #       src :   ディレクトリのハッシュ配列
-    #   戻り値
-    #       有効なパスを持つディレクトリのハッシュ配列
-    #
-    def self.get_src_dir(src)
-        tmp = Hash.new
-        src.each do |key, value| 
-            # 指定したディレクトリが在る場合のみ、ハッシュに追加する。
-            if File.directory?(value) then
-                tmp[key] = value
-            else
-                Message.show(:warn01, "#{key}: #{value} ", :warn )
-            end
-        end
-
-        return tmp
-
-    rescue Exception => ex
-        Message.show(:err11, "#{__method__}: #{ex.class}: #{ex.message}", :fatal)
-    end
-
-    #
     # self.get_dir_info
     #   コピー元、コピー先ディレクトリを受け取り、読みやすい形式で画面出力する。
     #   引数
     #       src     :   コピー元ディレクトリのハッシュ配列
     #       dest    :   コピー先ディレクトリのパス
-    #   戻り値
-    #       なし
     #
     def self.show_dir_info(src, dest)
         tmp = ""
@@ -45,23 +18,15 @@ module BackupUtil
         } 
 
         # 表示
-        Message.show(:info01, tmp, :info)
-        Message.show(:info02, "　" + dest, :info)
-
-    rescue Exception => ex
-        Message.show(:err12, "#{__method__}: #{ex.class}: #{ex.message}", :fatal )
+        Message.show_and_log(:info, :info02, desc: tmp)
+        Message.show_and_log(:info, :info03, desc: "　" + dest)
     end
 
     #
     # self.show_confirmation
-    #   実行確認のための処理を行う。
-    #   引数
-    #       なし
-    #   戻り値
-    #       なし
+    #   実行確認を行う。
     #
     def self.show_confirmation
-
         # 処理の実行確認メッセージ
         loop do 
             Message.show(:confirm01, "")
@@ -73,24 +38,26 @@ module BackupUtil
                 break
             when "N"
                 Message.show(:confirm03, "")
-                exit
+                exit(true)
             else
                 Message.show(:confirm04, "") 
             end
         end
-    rescue Exception => ex
-        Message.show(:err13, "#{__method__}: #{ex.class}: #{ex.message}", :fatal )
+    
+    rescue => ex
+        Message.exception(__method__, ex)
+        exit(false)
     end
 
     # コピー実行
-    def self.execute_copy(src, dest, prefix)
+    def self.execute_copy(dirs)
 
         # バックアップディレクトリの生成
-        dest_dir = File.join(dest, prefix+Time.new.strftime("%Y%m%d%H%M%S"))
+        dest_dir = File.join(dirs.dest_dir, dirs.dest_prefix+Time.new.strftime("%Y%m%d%H%M%S"))
         Dir.mkdir(dest_dir) 
 
         # 実行開始
-        src.each { |key, value| 
+        dirs.src_dir.each { |key, value| 
 
             # プログレスバーの生成（ソースディレクトリ名とディレクトリの容量を渡す。）
             bar = ProgressBar.new(File.basename(value), get_dir_info(value)[:dir_size])
@@ -99,19 +66,17 @@ module BackupUtil
             copy_files(value, dest_dir, bar)
 
             # 実行完了したら、改行しておく。
-            Message.show(:info03, "", :info)
+            Message.show(:info04)
         }
 
         # 結果の表示
         tmp = get_dir_info(dest_dir)
-        Message.show(:info04, "バックアップ先：#{dest_dir}", :info)
-        Message.show(:free, "  Total: #{tmp[:dir_size]}, ファイル数: #{tmp[:file_count]}, ディレクトリ数: #{tmp[:dir_count]} ", :info)
+        Message.show_and_log(:info, :info05, path: dest_dir)
+        Message.show_and_log(:info, :info06, size: tmp[:dir_size], fcount: tmp[:file_count], dcount: tmp[:dir_count])
 
-    rescue Exception => ex
-         # 例外発生時の処理
-         Message.show(:err11, " #{ex.class}: #{ex.message}", :fatal)
-    ensure
-
+    rescue => ex
+        Message.exception(__method__, ex)
+        exit(false)
     end
 
     private
@@ -138,6 +103,10 @@ module BackupUtil
 
         # 総サイズを返す。
         return Hash[dir_size: dir_size, file_count: file_count, dir_count: dir_count]
+
+    rescue => ex
+        Message.exception(__method__, ex)
+        exit(false)
     end
 
     # ディレクトリ内のファイルをコピーする。
@@ -160,11 +129,9 @@ module BackupUtil
                 FileUtils.copy(f, dest_dir)
             end
         }
-
-    rescue Exception => ex        # 例外発生時の処理
-        Message.show(:err11, " #{ex.class}: #{ex.message}", :fatal)
-    ensure
-
+    rescue => ex
+        Message.exception(__method__, ex)
+        exit(false)
     end
 
 end

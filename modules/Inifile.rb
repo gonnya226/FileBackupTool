@@ -9,6 +9,8 @@ module Inifile
     #   その他：Iniファイルの文字コードは、utf-8 固定。
     #           key が重複した場合は、後の値で上書きする。
     #           Iniファイル内で`;`のコメント使用可。`;`以降の文字列は無視する。
+    #   注意　：I18n のrequireとロケールファイル設定がされていない場合、
+    #           例外メッセージが正しく表示されないので注意。
     #           
     def read(path) 
 
@@ -62,27 +64,15 @@ module Inifile
         # ハッシュ配列を返す。
         return hash
 
-    rescue Errno::ENOENT
-        puts "【エラー】#{path} ファイルが見つかりません。"
-        puts "ファイルのパスを確認してください。"
-        puts "処理を中止します。"
+    rescue Errno::ENOENT => ex
+        puts I18n.t(:err01, path: path)
         exit(false)
-
     rescue ArgumentError
-        puts "【エラー】#{path} ファイルの読み取りに失敗しました。"
-        puts "#{path} ファイルの文字コードがUTF-8になっているか、確認してください。"
-        puts "処理を中止します。"
+        puts I18n.t(:err02, path: path)
         exit(false)
-
     rescue StandardError => ex
-        puts "【エラー】例外が発生しました。例外の内容を確認してください。"
-        puts "#{__method__}: #{ex.class}: #{ex.message} "
-        puts "#{ex.backtrace.join("\n")}"
-        puts "処理を中止します。"
+        puts I18n.t(:exception, method: __method__, class: ex.class, message: ex.message, backtrace: ex.backtrace.join("\n"))
         exit(false)
-
     end
 
 end
- 
-
