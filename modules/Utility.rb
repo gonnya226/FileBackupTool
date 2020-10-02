@@ -4,15 +4,14 @@ module BackupUtil
 
     #
     # self.get_dir_info
-    #   コピー元、コピー先ディレクトリを受け取り、読みやすい形式で画面出力する。
+    #   ディレクトリ情報を受け取り、読みやすい形式で画面出力する。
     #   引数
-    #       src     :   コピー元ディレクトリのハッシュ配列
-    #       dest    :   コピー先ディレクトリのパス
+    #       dirs    : バックアップディレクトリ情報
     #
     def self.show_dir_info(dirs)
         tmp = ""
 
-        # コピー元ディレクトリを展開し、文言化する。
+        # バックアップ元ディレクトリを展開し、文言化する。
         dirs.src_dir.each { |key, value|
             tmp += Message.t(:info09, key: key, value: value)
         } 
@@ -112,12 +111,12 @@ module BackupUtil
     # ディレクトリ内のファイルをコピーする。
     def self.copy_files(src, dest, bar)
 
-        # コピー元のディレクトリ名を取得し、コピー先にその名前のディレクトリを生成する。
+        # バックアップ元のディレクトリ名を取得し、バックアップ先にその名前のディレクトリを生成する。
         dest_dir = File.join(dest, File.basename(src))
         Dir.mkdir(dest_dir)
         Message.log(:info, :info07, dir: dest_dir.to_s)
 
-        # コピー元のディレクトリ内のディレクトリ／ファイルの一覧取得(`.`, `..`は取得しない)
+        # バックアップ元のディレクトリ内のディレクトリ／ファイルの一覧取得(`.`, `..`は取得しない)
         list = Dir.glob(File.join(src, "*"))
 
         list.each { |f| 
