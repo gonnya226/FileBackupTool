@@ -9,17 +9,17 @@ module BackupUtil
     #       src     :   コピー元ディレクトリのハッシュ配列
     #       dest    :   コピー先ディレクトリのパス
     #
-    def self.show_dir_info(src, dest)
+    def self.show_dir_info(dirs)
         tmp = ""
 
         # コピー元ディレクトリを展開し、文言化する。
-        src.each { |key, value|
-            tmp += "　#{key}: #{value} \n"
+        dirs.src_dir.each { |key, value|
+            tmp += Message.t(:info09, key: key, value: value)
         } 
 
         # 表示
         Message.show_and_log(:info, :info02, desc: tmp)
-        Message.show_and_log(:info, :info03, desc: "　" + dest)
+        Message.show_and_log(:info, :info03, desc: dirs.dest_dir)
     end
 
     #
@@ -115,6 +115,7 @@ module BackupUtil
         # コピー元のディレクトリ名を取得し、コピー先にその名前のディレクトリを生成する。
         dest_dir = File.join(dest, File.basename(src))
         Dir.mkdir(dest_dir)
+        Message.log(:info, :info07, dir: dest_dir.to_s)
 
         # コピー元のディレクトリ内のディレクトリ／ファイルの一覧取得(`.`, `..`は取得しない)
         list = Dir.glob(File.join(src, "*"))
@@ -127,6 +128,7 @@ module BackupUtil
                 # ファイルの場合、プログレスバーを更新して、ファイルコピー実行
                 bar.show(File.basename(f), File.size(f))
                 FileUtils.copy(f, dest_dir)
+                Message.log(:info, :info08, file: f.to_s)
             end
         }
     rescue => ex

@@ -17,7 +17,7 @@ end
 dirs = DirectorySetting.new(sys.setting_path)
 
 # 情報表示と実行確認
-BackupUtil.show_dir_info(dirs.src_dir, dirs.dest_dir)
+BackupUtil.show_dir_info(dirs)
 BackupUtil.show_confirmation
 
 BackupUtil.execute_copy(dirs)

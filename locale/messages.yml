@@ -10,10 +10,13 @@ ja:
 
     info01: "===== ファイルバックアップツール FileBackup.rb ===== %{desc}"
     info02: "【コピー元フォルダー】\n%{desc}"
-    info03: "【コピー先フォルダー】\n%{desc}"
+    info03: "【コピー先フォルダー】\n　%{desc}"
     info04: "【完了】"
     info05: "バックアップを完了しました。バックアップ先：%{path}"
     info06: "　Total: %{size}, ファイル数: %{fcount}, ディレクトリ数: %{dcount}"
+    info07: "【ディレクトリ作成】%{dir}"
+    info08: "【ファイルコピー】%{file}"
+    info09: "　%{key}: %{value} \n"
 
     warn01: "【注意】設定されたパスは、ディレクトリではありません。 %{desc}" 
     
