@@ -40,8 +40,8 @@ class ProgressBar
         if progress >= 100 then                 # 進捗が 100% 以上の場合
             @line[1..-2] = DONE*(BAR.length-2)  # 両端を除く全てを DONE 記号で埋める。
         else
-            tmp = EDGE + (DONE*(progress*(SCALE.length)/100).floor).chop + ARROW     # 進捗部分を生成して、
-            @line[0..tmp.length-1] = tmp                            # 進捗部分を置き換える。
+            tmp = EDGE + (DONE*(progress*(SCALE.length)/100).floor).chop + ARROW    # 進捗部分を生成して、
+            @line[0..tmp.length-1] = tmp                                            # 進捗部分を置き換える。
         end
 
         # 前回表示した行を消去
@@ -51,7 +51,6 @@ class ProgressBar
         show_line = "\r" + sprintf("%s %s %s%% (%s/%s) %s...", @title[0,10], @line, progress, get_size_str(@done), get_size_str(@total), info[0,10])
         print show_line
         @showed_length = show_line.length
-
     end
     
     #
