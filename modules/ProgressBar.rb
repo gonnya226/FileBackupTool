@@ -1,11 +1,11 @@
 class ProgressBar
 
     # 定数定義 
-    EDGE = "|"
-    SCALE = "---------+" * 4
-    BAR = (EDGE + SCALE).chop + EDGE    # プログレスバーのベース文字列
-    DONE = "="                          # 済み記号
-    ARROW = ">"                         # 済み記号の先端
+    EDGE = "|".freeze                   # バーの両端
+    SCALE = ("---------+" * 4).freeze   # バーの目盛り部分
+    BAR = ((EDGE + SCALE).chop + EDGE).freeze   # バーのベース文字列
+    DONE = "=".freeze                   # 済み記号
+    ARROW = ">".freeze                  # 済み記号の先端
 
     #
     # initialize    初期化
@@ -19,6 +19,7 @@ class ProgressBar
         @total = total      # 100% 時の値（単位は何でもいい。）
         @done = 0           # 完了した値
         @line = ""          # 表示する内容
+        @showed_length = 0  # 直前に表示した文字列の長さ（上書きの際に使用する。）
     end
     
     #
@@ -42,22 +43,24 @@ class ProgressBar
             tmp = EDGE + (DONE*(progress*(SCALE.length)/100).floor).chop + ARROW     # 進捗部分を生成して、
             @line[0..tmp.length-1] = tmp                            # 進捗部分を置き換える。
         end
-        
+
+        # 前回表示した行を消去
+        print "\r".ljust(@showed_length)
+
         # 情報表示
-        print "\r" + " "*BAR.length*2
-        print "\r" + sprintf("%s %s %s%% (%s/%s) %s...", @title[0,10], @line, progress, get_size_str(@done), get_size_str(@total), info[0,5] )
+        show_line = "\r" + sprintf("%s %s %s%% (%s/%s) %s...", @title[0,10], @line, progress, get_size_str(@done), get_size_str(@total), info[0,10])
+        print show_line
+        @showed_length = show_line.length
+
     end
     
     #
     # reset
     # 進捗をリセットする。
-    #   引数
-    #       なし
-    #   戻り値
-    #       なし
     #
     def reset
         @done = 0
+        @showed_length = 0
     end
 
     private
@@ -69,7 +72,7 @@ class ProgressBar
     #       total   :   100% となるサイズ
     #       done    :   実行済みのサイズ
     #   戻り値
-    #       進捗度（100分率の整数値）
+    #       進捗度（100分率の整数値。端数は四捨五入）
     #
     def get_progress(total, done)
         if done <= 0    then return 0   end     # done が 0 以下の場合は、0 を返す。
@@ -87,7 +90,6 @@ class ProgressBar
     #       最適な単位にしたバイト数と単位を付与した文字列
     #
     def get_size_str(bytes)
-
         unit = ["Bytes", "KiB", "MiB", "GiB"]
         block = 1024
 
@@ -100,7 +102,5 @@ class ProgressBar
 
         # どの単位にも合致しない場合は、そのまま Bytes で返す。
         return bytes + unit[0]
-
     end
-
 end

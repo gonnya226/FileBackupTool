@@ -13,7 +13,7 @@ ja:
     info03: "【バックアップ先フォルダー】\n　%{desc}"
     info04: "【完了】"
     info05: "バックアップを完了しました。バックアップ先：%{path}"
-    info06: "　Total: %{size}, ファイル数: %{fcount}, ディレクトリ数: %{dcount}"
+    info06: "　Total: %{size}Bytes, ファイル数: %{fcount}, ディレクトリ数: %{dcount}"
     info07: "【ディレクトリ作成】%{dir}"
     info08: "【ファイルコピー】%{file}"
     info09: "　%{key}: %{value} \n"
