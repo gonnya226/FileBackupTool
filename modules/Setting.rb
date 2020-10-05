@@ -99,6 +99,7 @@ class DirectorySetting < SettingBase
             exit(false)    
         end
 
+        # バックアップ先ディレクトリの書き込み権限チェック
         begin
             # 名前がランダムなフォルダーを作って消してみる。
             testdir = File.join(@dest_dir, SecureRandom.alphanumeric(10))
