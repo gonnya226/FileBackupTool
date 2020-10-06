@@ -31,10 +31,9 @@ class SettingBase
 end
 
 class SystemSetting < SettingBase
-    
     # 配列でインスタンス変数のアクセッサをまとめて定義
     VARS = [:log_path, :log_date_format, :setting_path].freeze
-    attr_accessor *VARS
+    attr_reader *VARS
 
     def initialize(path)
         # path の内容を読み込む。変数 @ini に格納される。
@@ -47,7 +46,8 @@ class SystemSetting < SettingBase
             if @ini.keys.include? tmp then
                 # 該当するキーがあれば、インスタンス変数に読み込み。
                 # ※ 全てのパラメータで、yen_to_slashの置換もしてしまう。
-                self.send(tmp+"=", yen_to_slash(@ini[tmp]))
+                # self.send(tmp+"=", yen_to_slash(@ini[tmp]))
+                eval("@#{tmp} = yen_to_slash(@ini[tmp])")
             else
                 # 該当するキーがない場合は、エラーを表示する。
                 Message.show(:err03, param: tmp, path: path)
@@ -58,10 +58,9 @@ class SystemSetting < SettingBase
 end
 
 class DirectorySetting < SettingBase
-
     # 配列でインスタンス変数のアクセッサをまとめて定義
     VARS = [:src_dir, :dest_dir, :dest_prefix].freeze
-    attr_accessor *VARS
+    attr_reader *VARS
    
     def initialize(path)
         
@@ -75,11 +74,13 @@ class DirectorySetting < SettingBase
             else
                 # destination セクションの値
                 tmp = var.to_s
+                dest = @ini["destination"]
 
-                if @ini["destination"].keys.include? tmp then
+                if dest.keys.include? tmp then
                     # 該当するキーがあれば、インスタンス変数に読み込み。
                     # ※ 全てのパラメータに円マーク不要なので、パスかどうかにかかわらず置換もしてしまう。
-                    self.send(tmp+"=", yen_to_slash(@ini["destination"][tmp]))
+                    # self.send(tmp+"=", yen_to_slash(dest[tmp]))
+                    eval("@#{tmp} = yen_to_slash(dest[tmp])")
                 else
                     # 該当するキーがない場合は、エラーを表示する。
                     Message.show_and_log(:error, :err03, param: tmp, path: path)
@@ -105,7 +106,7 @@ class DirectorySetting < SettingBase
             testdir = File.join(@dest_dir, SecureRandom.alphanumeric(10))
             Dir.mkdir(testdir)
             Dir.rmdir(testdir)
-        rescue Errno::EACCES => ex
+        rescue Errno::EACCES
             Message.show_and_log(:error, :err08, path: @dest_dir)
             exit(false)
         rescue => ex
