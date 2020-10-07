@@ -18,7 +18,6 @@ class ProgressBar
         @title = title      # 進捗表示する処理名（フォルダー名とか渡す）
         @total = total      # 100% 時の値（単位は何でもいい。）
         @done = 0           # 完了した値
-        @line = ""          # 表示する内容
         @showed_length = 0  # 直前に表示した文字列の長さ（上書きの際に使用する。）
     end
     
@@ -35,22 +34,22 @@ class ProgressBar
         @done += size        
         progress = get_progress(@total, @done)
 
-        @line = BAR.dup     # BAR の内容を複製（こうしないと BAR の値が変わってしまう。。）
+        bar = BAR.dup     # BAR の内容を複製（こうしないと BAR の値が変わってしまう。。）
 
         if progress >= 100 then                 # 進捗が 100% 以上の場合
-            @line[1..-2] = DONE*(BAR.length-2)  # 両端を除く全てを DONE 記号で埋める。
+            bar[1..-2] = DONE*(BAR.length-2)  # 両端を除く全てを DONE 記号で埋める。
         else
             tmp = EDGE + (DONE*(progress*(SCALE.length)/100).floor).chop + ARROW    # 進捗部分を生成して、
-            @line[0..tmp.length-1] = tmp                                            # 進捗部分を置き換える。
+            bar[0..tmp.length-1] = tmp                                            # 進捗部分を置き換える。
         end
 
         # 前回表示した行を消去
         print "\r".ljust(@showed_length)
 
         # 情報表示
-        show_line = "\r" + sprintf("%s %s %s%% (%s/%s) %s...", @title[0,10], @line, progress, get_size_str(@done), get_size_str(@total), info[0,10])
-        print show_line
-        @showed_length = show_line.length
+        line = "\r" + sprintf("%s %s %s%% (%s/%s) %s...", @title[0,10], bar, progress, get_size_str(@done), get_size_str(@total), info[0,10])
+        print line
+        @showed_length = line.length
     end
     
     #
