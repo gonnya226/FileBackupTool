@@ -1,7 +1,6 @@
 module BackupUtil
 
     require 'fileutils'
-
     #
     # self.get_dir_info
     #   ディレクトリ情報を受け取り、読みやすい形式で画面出力する。
@@ -133,6 +132,13 @@ module BackupUtil
 
         # バックアップ元のディレクトリ名を取得し、バックアップ先にその名前のディレクトリを生成する。
         dest_dir = File.join(dest, File.basename(src))
+
+        # バックアップ先に同じ名前のディレクトリがすでにある場合は、"_"を付与。
+        # ディレクトリの重複が無くなるまで、"_"を付与し続ける。
+        while Dir.exists?(dest_dir)
+            dest_dir = dest_dir + "_"
+        end
+
         Dir.mkdir(dest_dir)
         Message.log(:info, :info07, dir: dest_dir.to_s)
 

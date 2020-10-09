@@ -1,7 +1,7 @@
-require './modules/Message.rb'
-require './modules/Setting.rb'
-require './modules/Utility.rb'
-require './modules/ProgressBar.rb'
+require './modules/Message'
+require './modules/Setting'
+require './modules/Utility'
+require './modules/ProgressBar'
 
 SYSTEM_INI = "./system.ini".freeze
 

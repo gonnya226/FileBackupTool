@@ -1,4 +1,4 @@
-require './modules/Inifile.rb'
+require './modules/Inifile'
 require 'securerandom'
 
 #
@@ -31,7 +31,7 @@ class SettingBase
 end
 
 class SystemSetting < SettingBase
-    # 配列でインスタンス変数のアクセッサをまとめて定義
+    # 配列でインスタンス変数のgetterをまとめて定義
     VARS = [:log_path, :log_date_format, :setting_path].freeze
     attr_reader *VARS
 
@@ -58,7 +58,7 @@ class SystemSetting < SettingBase
 end
 
 class DirectorySetting < SettingBase
-    # 配列でインスタンス変数のアクセッサをまとめて定義
+    # 配列でインスタンス変数のgetterをまとめて定義
     VARS = [:src_dir, :dest_dir, :dest_prefix].freeze
     attr_reader *VARS
    
