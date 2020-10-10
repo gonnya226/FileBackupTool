@@ -117,13 +117,19 @@ module Message
         @logger.close
 
     rescue => ex
-        # ログに出力できないので、プロンプトに直接出力する。
+        # ここで例外が発生した場合、ログに出力できない状態なので、コンソールに直接出力する。
         puts t(:err06, path: sys.log_path)
         puts t(:exception, method: __method__, class: ex.class, message: ex.message, backtrace: ex.backtrace.join("\n"))
         exit(false)
     end
 
-    # メッセージ文を取得する
+    #
+    # self.t
+    # メッセージ文を取得する。I18n.t へそのまま引き継ぐ。
+    #   引数
+    #       label   :   メッセージ文を指定するシンボル
+    #       *args   :   引数リスト
+    #
     def self.t(label, *args)
         return I18n.t(label, *args)
     end
