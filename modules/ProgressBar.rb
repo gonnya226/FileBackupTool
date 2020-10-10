@@ -99,6 +99,6 @@ class ProgressBar
         end
 
         # どの単位にも合致しない場合は、そのまま Bytes で返す。
-        return bytes + unit[0]
+        return bytes.to_s + unit[0]
     end
 end

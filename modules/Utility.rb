@@ -1,4 +1,4 @@
-module BackupUtil
+module BackupUtils
 
     require 'fileutils'
     #
@@ -143,7 +143,7 @@ module BackupUtil
         Message.log(:info, :info07, dir: dest_dir.to_s)
 
         # バックアップ元のディレクトリ内のディレクトリ／ファイルの一覧取得(`.`, `..`は取得しない)
-        list = Dir.glob(File.join(src, "*"))
+        list = Dir.glob(File.join(src, "*"), File::FNM_DOTMATCH).reject{|x| x =~ /\.$/}
 
         list.each { |f| 
             if File::ftype(f) == "directory"

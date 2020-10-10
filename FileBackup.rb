@@ -15,10 +15,10 @@ Message.init(sys)
 dirs = DirectorySetting.new(sys.setting_path)
 
 # 情報表示と実行確認
-BackupUtil.show_dir_info(dirs)
-BackupUtil.show_confirmation
+BackupUtils.show_dir_info(dirs)
+BackupUtils.show_confirmation
 
 # バックアップ実行
-BackupUtil.execute_copy(dirs)
+BackupUtils.execute_copy(dirs)
 
 
