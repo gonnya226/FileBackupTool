@@ -1,4 +1,4 @@
-require './modules/Inifile'
+require_relative './Inifile'
 require 'securerandom'
 
 #
