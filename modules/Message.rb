@@ -7,7 +7,7 @@ module Message
 
     # i18n 初期設定
     begin
-        I18n.load_path = Dir["./locale/**/*.yml"]
+        I18n.load_path = Dir[File.expand_path("../locale/**/*.yml", __dir__)]
         I18n.locale = :ja
     rescue I18n::InvalidLocaleData
         # ロケールファイルのオープンエラー
@@ -31,9 +31,9 @@ module Message
     #
     def self.init(sys)
         # system.ini の内容で初期化する。
-        @log_path = sys.log_path
+        @log_path = File.expand_path(sys.log_path, File.dirname(__dir__))
         @log_date_format = sys.log_date_format
-
+        
         # logへ最初の書き込みを行ってみる。
         self.show_and_log(:info, :info01, desc: Time.new.strftime("%Y-%m-%d %H:%M"))
 
